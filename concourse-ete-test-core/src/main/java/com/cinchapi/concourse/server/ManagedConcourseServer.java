@@ -72,6 +72,7 @@ import com.google.common.base.Throwables;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.google.inject.Inject;
 
 /**
  * A {@link ManagedConcourseServer} is an external server process that can be
@@ -90,8 +91,7 @@ public class ManagedConcourseServer {
      * @param installDirectory
      * @return the ManagedConcourseServer
      */
-    public static ManagedConcourseServer manageExistingServer(
-            String installDirectory) {
+    public static ManagedConcourseServer manageExistingServer(String installDirectory) {
         return new ManagedConcourseServer(installDirectory);
     }
 
@@ -384,7 +384,7 @@ public class ManagedConcourseServer {
      * @return the connection handler
      */
     public Concourse connect(String username, String password) {
-        return new Client(username, password);
+        return new GuiceClient(new Client(username, password)).getClient();
     }
 
     /**

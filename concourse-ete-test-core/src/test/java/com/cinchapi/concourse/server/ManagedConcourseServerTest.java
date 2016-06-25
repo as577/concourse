@@ -117,5 +117,11 @@ public class ManagedConcourseServerTest {
         String result = concourse.call("get", "name", record);
         Assert.assertEquals("jeff", result);
     }
+    
+    @Test
+    public void testGuideMethodInterceptor() {
+    	server.start();
+    	Concourse concourse = server.connect();
+    }
 
 }
