@@ -72,7 +72,8 @@ import com.google.common.base.Throwables;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 /**
  * A {@link ManagedConcourseServer} is an external server process that can be
@@ -384,7 +385,8 @@ public class ManagedConcourseServer {
      * @return the connection handler
      */
     public Concourse connect(String username, String password) {
-        return new GuiceClient(new Client(username, password)).getClient();
+        Injector injector = Guice.createInjector(new ClientModule());
+        return injector.getInstance(Client.class);
     }
 
     /**
