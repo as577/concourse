@@ -22,6 +22,7 @@ import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.ServerSocket;
 import java.net.SocketException;
@@ -373,7 +374,16 @@ public class ManagedConcourseServer {
      * @return the connection handler
      */
     public Concourse connect() {
-        return connect("admin", "admin");
+        try {
+            return connect("admin", "admin");
+        }
+        catch (ClassNotFoundException | IllegalAccessException
+                | IllegalArgumentException | InvocationTargetException
+                | NoSuchMethodException | SecurityException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
@@ -383,10 +393,32 @@ public class ManagedConcourseServer {
      * @param username
      * @param password
      * @return the connection handler
+     * @throws ClassNotFoundException 
+     * @throws SecurityException 
+     * @throws NoSuchMethodException 
+     * @throws InvocationTargetException 
+     * @throws IllegalArgumentException 
+     * @throws IllegalAccessException 
      */
-    public Concourse connect(String username, String password) {
+    public Concourse connect(String username, String password) throws ClassNotFoundException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+        ClassLoader loader = new URLClassLoader(gatherJars(getInstallDirectory()), null);
+        Class<?> clazz = loader.loadClass("org.cinchapi.concourse.Concourse");
+        Object concourse = clazz.getMethod("connect", String.class, int.class, String.class, String.class)
+                                .invoke(null, "localhost", getClientPort(), username, password);
+        Class<? extends Concourse> clientClass = concourse.getClass().asSubclass(Concourse.class);
         Injector injector = Guice.createInjector(new ClientModule());
-        return injector.getInstance(Client.class);
+        return injector.getInstance(clientClass);
+//        Class<? extends Concourse> clazz = null;
+//        try {
+//            clazz = Class.forName("com.cinchapi.concourse.Concourse$Client").asSubclass(Concourse.class);
+//            Injector injector = Guice.createInjector(new ClientModule());
+//            return injector.getInstance(clazz);
+//        }
+//        catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+        //return new Client(username, password);
     }
 
     /**

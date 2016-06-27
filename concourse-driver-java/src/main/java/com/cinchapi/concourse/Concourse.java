@@ -57,6 +57,7 @@ import com.cinchapi.concourse.util.Transformers;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Sets;
+import com.google.inject.Inject;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 
@@ -3212,6 +3213,7 @@ public abstract class Concourse implements AutoCloseable {
          * environment and server if the prefs file does not exist) and return a
          * handler to facilitate database interaction.
          */
+        @Inject
         public Client() {
             this(ENVIRONMENT);
         }

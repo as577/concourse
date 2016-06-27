@@ -8,9 +8,6 @@ public class ClientMethodReflector implements MethodInterceptor {
 	@Override
 	public Object invoke(MethodInvocation invocation) throws Throwable {
 		System.out.println("RECEIVED: " + invocation.getMethod().getName());
-		if(true) {
-			throw new IllegalStateException("helloooooo");
-		}
 		return invocation.proceed();
 	}
 
